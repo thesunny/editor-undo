@@ -27,7 +27,7 @@ export default class StitchApp extends React.Component {
     const { anchorNode } = window.getSelection()
     const { offsetKey, offset } = mergeSplitText(anchorNode)
     console.log({ offsetKey, offset })
-    this.snapshot.revert()
+    this.snapshot.apply()
     this.update()
   }
 

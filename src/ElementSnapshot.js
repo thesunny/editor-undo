@@ -35,7 +35,7 @@ export default class ElementSnapshot {
     this.snapshot = getSnapshot(el)
   }
 
-  revert() {
+  apply() {
     applySnapshot(this.snapshot)
   }
 }
