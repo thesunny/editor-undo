@@ -26,14 +26,13 @@ export default class StitchApp extends React.Component {
   stitch = () => {
     const { anchorNode } = window.getSelection()
     const { offsetKey, offset } = mergeSplitText(anchorNode)
+    console.log({ offsetKey, offset })
     this.snapshot.revert()
-    // applySnapshot(this.snapshot)
     this.update()
   }
 
   componentDidMount() {
     const el = document.querySelector(`[data-key='1969']`)
-    console.log(el)
     this.snapshot = new ElementSnapshot(el)
   }
 
