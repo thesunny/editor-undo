@@ -1,9 +1,4 @@
-function closest(node, selector) {
-  if (node.nodeType === Node.TEXT_NODE) {
-    node = node.parentNode
-  }
-  return node.closest(selector)
-}
+import closest from './closest'
 
 // Takes a node and merges it with its dup. The dup is created when the
 // browser splits the DOM when the user hits ENTER. In Android, we can't

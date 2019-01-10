@@ -4,18 +4,15 @@ import "bootstrap/dist/css/bootstrap.css"
 import prettier from "prettier/standalone"
 import prettierHTML from "prettier/parser-html"
 
-// import initialHTML from "./initial-html"
 import initialHTML from "./initial-html"
-// import stitch, { stitchFromNode } from "./stitch"
-// import getSnapshot from "./getSnapshot"
-// import applySnapshot from "./applySnapshot"
+import closest from "./closest"
 import mergeSplitText from "./merge-split-text"
 import ElementSnapshot from "./ElementSnapshot"
 
 export default class StitchApp extends React.Component {
   editorRef = React.createRef()
   state = { html: initialHTML }
-  snapshot = null
+  __snapshot__ = null
 
   update = () => {
     const el = this.editorRef.current
@@ -23,17 +20,23 @@ export default class StitchApp extends React.Component {
     this.setState({ html })
   }
 
+  snapshot = () => {
+    const editorDiv = this.editorRef.current
+    editorDiv.focus()
+    const { anchorNode } = window.getSelection()
+    const subrootEl = closest(
+      anchorNode,
+      `[data-key='${editorDiv.dataset.key}'] > *`
+    )
+    this.__snapshot__ = new ElementSnapshot(subrootEl)
+  }
+
   stitch = () => {
     const { anchorNode } = window.getSelection()
     const { offsetKey, offset } = mergeSplitText(anchorNode)
     console.log({ offsetKey, offset })
-    this.snapshot.apply()
+    this.__snapshot__.apply()
     this.update()
-  }
-
-  componentDidMount() {
-    const el = document.querySelector(`[data-key='1969']`)
-    this.snapshot = new ElementSnapshot(el)
   }
 
   render() {
@@ -49,6 +52,9 @@ export default class StitchApp extends React.Component {
           <button className="btn btn-sm btn-primary" onClick={this.update}>
             Update
           </button>
+          <button className="btn btn-sm btn-primary" onClick={this.snapshot}>
+            Snapshot
+          </button>
           <button className="btn btn-sm btn-primary" onClick={this.stitch}>
             Stitch
           </button>
@@ -56,6 +62,7 @@ export default class StitchApp extends React.Component {
         <div className="form-group">
           <label>Editor</label>
           <div
+            data-slate-editor
             ref={this.editorRef}
             className="border p-3 rounded"
             contentEditable
