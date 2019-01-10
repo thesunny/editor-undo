@@ -1,12 +1,25 @@
+function isTextNode(node) {
+  return node.nodeType === Node.TEXT_NODE
+}
+
 function getSnapshot(node) {
   const snapshot = {}
   snapshot.node = node
+  if (isTextNode(node)) {
+    snapshot.text = node.textContent
+  }
   snapshot.children = Array.from(node.childNodes).map(getSnapshot)
   return snapshot
 }
 
 function applySnapshot(snapshot) {
   const el = snapshot.node
+  if (isTextNode(el)) {
+    // Don't do unnecessary DOM update
+    if (el.textContent !== snapshot.text) {
+      el.textContent = snapshot.text
+    }
+  }
   snapshot.children.forEach(childSnapshot => {
     applySnapshot(childSnapshot, childSnapshot.node)
     el.appendChild(childSnapshot.node)

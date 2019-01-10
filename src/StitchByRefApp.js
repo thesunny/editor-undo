@@ -26,7 +26,7 @@ export default class StitchApp extends React.Component {
     const { anchorNode } = window.getSelection()
     const subrootEl = closest(
       anchorNode,
-      `[data-key='${editorDiv.dataset.key}'] > *`
+      `[data-slate-editor] > *`
     )
     this.__snapshot__ = new ElementSnapshot(subrootEl)
   }
