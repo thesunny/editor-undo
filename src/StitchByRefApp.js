@@ -7,46 +7,15 @@ import prettierHTML from "prettier/parser-html"
 // import initialHTML from "./initial-html"
 import initialHTML from "./initial-html"
 // import stitch, { stitchFromNode } from "./stitch"
-import getSnapshot from "./getSnapshot"
-import applySnapshot from "./applySnapshot"
-
-function getLeaf(node) {
-  if (node.nodeType === Node.TEXT_NODE) {
-    node = node.parentNode
-  }
-  return node.closest("[data-slate-leaf]")
-}
-
-// returns {offsetKey, offset}
-function mergeSlateLeaf(node) {
-  const slateLeaf = getLeaf(node)
-  const offsetKey = slateLeaf.dataset.offsetKey
-  const textNodes = document.querySelectorAll(
-    `[data-offset-key='${offsetKey}']`
-  )
-
-  // On Desktop Chrome: This happens if you split at the end of a block
-  if (node.nodeType !== Node.TEXT_NODE) {
-    return { offsetKey, offset: textNodes[0].textContent.length }
-  }
-
-  // On Desktop Chrome:
-  // This happens if you split at the beginning or end of a node.
-  // Does not happen at beginning of block.
-  if (textNodes.length === 1) {
-    return { offsetKey, offset: 0 }
-  }
-
-  const offset = textNodes[0].textContent.length
-  node.textContent = Array.from(textNodes)
-    .map(textNode => textNode.textContent)
-    .join("")
-  return { offsetKey, offset }
-}
+// import getSnapshot from "./getSnapshot"
+// import applySnapshot from "./applySnapshot"
+import mergeSplitText from "./merge-split-text"
+import ElementSnapshot from "./ElementSnapshot"
 
 export default class StitchApp extends React.Component {
   editorRef = React.createRef()
   state = { html: initialHTML }
+  snapshot = null
 
   update = () => {
     const el = this.editorRef.current
@@ -56,12 +25,16 @@ export default class StitchApp extends React.Component {
 
   stitch = () => {
     const { anchorNode } = window.getSelection()
-    const mergeData = mergeSlateLeaf(anchorNode)
-    applySnapshot(this.snapshot, this.editorRef.current)
+    const { offsetKey, offset } = mergeSplitText(anchorNode)
+    this.snapshot.revert()
+    // applySnapshot(this.snapshot)
+    this.update()
   }
 
   componentDidMount() {
-    this.snapshot = getSnapshot(this.editorRef.current)
+    const el = document.querySelector(`[data-key='1969']`)
+    console.log(el)
+    this.snapshot = new ElementSnapshot(el)
   }
 
   render() {
