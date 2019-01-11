@@ -24,7 +24,7 @@ function getSnapshot(elements) {
   return snapshot
 }
 
-function __applySnapshot(snapshot) {
+function applyElementSnapshot(snapshot) {
   const el = snapshot.node
   if (isTextNode(el)) {
     // Update text if it is different
@@ -33,7 +33,7 @@ function __applySnapshot(snapshot) {
     }
   }
   snapshot.children.forEach(childSnapshot => {
-    __applySnapshot(childSnapshot, childSnapshot.node)
+    applyElementSnapshot(childSnapshot, childSnapshot.node)
     el.appendChild(childSnapshot.node)
   })
 
@@ -57,7 +57,7 @@ function __applySnapshot(snapshot) {
 
 function applySnapshot(snapshot) {
   const { elements, next, parent } = snapshot
-  elements.forEach(__applySnapshot)
+  elements.forEach(applyElementSnapshot)
   const lastElement = elements[elements.length - 1].node
   if (snapshot.next) {
     parent.insertBefore(lastElement, next)
