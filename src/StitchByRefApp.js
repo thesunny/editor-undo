@@ -4,9 +4,9 @@ import "bootstrap/dist/css/bootstrap.css"
 import prettier from "prettier/standalone"
 import prettierHTML from "prettier/parser-html"
 
-import initialHTML from "./initial-html"
+import initialHTML from "./empty-paragraph-html"
 import closest from "./closest"
-import mergeSplitText from "./merge-split-text"
+import getSplitPos from "./get-split-pos"
 import ElementSnapshot from "./ElementSnapshot"
 
 export default class StitchApp extends React.Component {
@@ -24,16 +24,14 @@ export default class StitchApp extends React.Component {
     const editorDiv = this.editorRef.current
     editorDiv.focus()
     const { anchorNode } = window.getSelection()
-    const subrootEl = closest(
-      anchorNode,
-      `[data-slate-editor] > *`
-    )
+    const subrootEl = closest(anchorNode, `[data-slate-editor] > *`)
     this.__snapshot__ = new ElementSnapshot(subrootEl)
+    console.log(this.__snapshot__)
   }
 
   stitch = () => {
     const { anchorNode } = window.getSelection()
-    const { offsetKey, offset } = mergeSplitText(anchorNode)
+    const { offsetKey, offset } = getSplitPos(anchorNode)
     console.log({ offsetKey, offset })
     this.__snapshot__.apply()
     this.update()

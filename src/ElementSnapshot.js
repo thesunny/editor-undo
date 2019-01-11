@@ -2,17 +2,24 @@ function isTextNode(node) {
   return node.nodeType === Node.TEXT_NODE
 }
 
-function getSnapshot(node) {
+function __getSnapshot(node) {
   const snapshot = {}
   snapshot.node = node
   if (isTextNode(node)) {
     snapshot.text = node.textContent
   }
-  snapshot.children = Array.from(node.childNodes).map(getSnapshot)
+  snapshot.children = Array.from(node.childNodes).map(__getSnapshot)
   return snapshot
 }
 
-function applySnapshot(snapshot) {
+function getSnapshot(node) {
+  const snapshot = __getSnapshot(node)
+  snapshot.parent = node.parentElement
+  snapshot.next = node.nextElementSibling
+  return snapshot
+}
+
+function __applySnapshot(snapshot) {
   const el = snapshot.node
   if (isTextNode(el)) {
     // Don't do unnecessary DOM update
@@ -21,7 +28,7 @@ function applySnapshot(snapshot) {
     }
   }
   snapshot.children.forEach(childSnapshot => {
-    applySnapshot(childSnapshot, childSnapshot.node)
+    __applySnapshot(childSnapshot, childSnapshot.node)
     el.appendChild(childSnapshot.node)
   })
 
@@ -41,6 +48,16 @@ function applySnapshot(snapshot) {
   )
   dups.delete(el)
   dups.forEach(dup => dup.parentElement.removeChild(dup))
+}
+
+function applySnapshot(snapshot) {
+  __applySnapshot(snapshot)
+  const { node, next, parent } = snapshot
+  if (snapshot.next) {
+    parent.insertBefore(node, next)
+  } else {
+    parent.appendChild(node)
+  }
 }
 
 export default class ElementSnapshot {
