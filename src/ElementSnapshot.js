@@ -2,27 +2,32 @@ function isTextNode(node) {
   return node.nodeType === Node.TEXT_NODE
 }
 
-function __getSnapshot(node) {
+function getElementSnapshot(node) {
   const snapshot = {}
   snapshot.node = node
   if (isTextNode(node)) {
     snapshot.text = node.textContent
   }
-  snapshot.children = Array.from(node.childNodes).map(__getSnapshot)
+  snapshot.children = Array.from(node.childNodes).map(getElementSnapshot)
   return snapshot
 }
 
-function getSnapshot(node) {
-  const snapshot = __getSnapshot(node)
-  snapshot.parent = node.parentElement
-  snapshot.next = node.nextElementSibling
+function getSnapshot(elements) {
+  if (!elements.length) throw new Error(`elements must be an Array`)
+  // const snapshot = __getSnapshot(node)
+  const lastElement = elements[elements.length - 1]
+  const snapshot = {
+    elements: elements.map(getElementSnapshot),
+    parent: lastElement.parentElement,
+    next: lastElement.nextElementSibling,
+  }
   return snapshot
 }
 
 function __applySnapshot(snapshot) {
   const el = snapshot.node
   if (isTextNode(el)) {
-    // Don't do unnecessary DOM update
+    // Update text if it is different
     if (el.textContent !== snapshot.text) {
       el.textContent = snapshot.text
     }
@@ -51,18 +56,25 @@ function __applySnapshot(snapshot) {
 }
 
 function applySnapshot(snapshot) {
-  __applySnapshot(snapshot)
-  const { node, next, parent } = snapshot
+  const { elements, next, parent } = snapshot
+  elements.forEach(__applySnapshot)
+  const lastElement = elements[elements.length - 1].node
   if (snapshot.next) {
-    parent.insertBefore(node, next)
+    parent.insertBefore(lastElement, next)
   } else {
-    parent.appendChild(node)
+    parent.appendChild(lastElement)
+  }
+  let prevElement = lastElement
+  for (let i = elements.length - 2; i >= 0; i--) {
+    const element = elements[i].node
+    parent.insertBefore(element, prevElement)
+    prevElement = element
   }
 }
 
 export default class ElementSnapshot {
-  constructor(el) {
-    this.snapshot = getSnapshot(el)
+  constructor(els) {
+    this.snapshot = getSnapshot(els)
   }
 
   apply() {

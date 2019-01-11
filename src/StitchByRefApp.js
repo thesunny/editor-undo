@@ -25,7 +25,12 @@ export default class StitchApp extends React.Component {
     editorDiv.focus()
     const { anchorNode } = window.getSelection()
     const subrootEl = closest(anchorNode, `[data-slate-editor] > *`)
-    this.__snapshot__ = new ElementSnapshot(subrootEl)
+    const elements = [subrootEl]
+    const { previousElementSibling } = subrootEl
+    if (previousElementSibling) {
+      elements.unshift(previousElementSibling)
+    }
+    this.__snapshot__ = new ElementSnapshot(elements)
     console.log(this.__snapshot__)
   }
 
