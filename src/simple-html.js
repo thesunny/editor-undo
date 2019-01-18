@@ -22,6 +22,12 @@ export default `<div data-key="1969" style="position: relative;">
       ><span data-slate-content="true">!</span></span
     ></span
   >
+  <table>
+    <tbody><tr
+      ><td data-slate-leaf="true">hello world</td
+      ><td data-slate-leaf="true">goodbye world</td
+      ><td data-slate-leaf="true">good evening world</td></tr></tbody>
+  </table>
 </div>
 <div data-key="1971" style="position: relative;">
   <span data-key="1972"

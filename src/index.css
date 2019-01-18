@@ -16,3 +16,12 @@ code {
 [data-slate-editor] > * + * {
     margin-top: 1em;
 }
+
+table {
+  margin-top: 1em;
+}
+
+td {
+  border: 1px solid silver;
+  padding: 0.25em 1em;
+}
