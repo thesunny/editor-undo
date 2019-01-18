@@ -33,7 +33,7 @@ function applyElementSnapshot(snapshot) {
     }
   }
   snapshot.children.forEach(childSnapshot => {
-    applyElementSnapshot(childSnapshot, childSnapshot.node)
+    applyElementSnapshot(childSnapshot)
     el.appendChild(childSnapshot.node)
   })
 
@@ -73,7 +73,7 @@ function applySnapshot(snapshot) {
 }
 
 export default class ElementSnapshot {
-  constructor(els, data) {
+  constructor(els, data = null) {
     this.snapshot = getSnapshot(els)
     this.data = data
   }
