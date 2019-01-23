@@ -19,15 +19,14 @@ export default class StitchApp extends React.Component {
     this.setState({ html })
   }
 
-  onKeyDown = () => {
+  onKeyDown = event => {
+    console.log("onKeyDown", { event })
     actionSnapshot = new ActionSnapshot(window)
   }
 
   onInput = () => {
-    requestAnimationFrame(() => {
-      const action = actionSnapshot.compare(window)
-      console.log("action", action)
-    })
+    const action = actionSnapshot.compare(window)
+    console.log("action", action)
   }
 
   render() {

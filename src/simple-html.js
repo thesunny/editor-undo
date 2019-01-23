@@ -21,15 +21,21 @@ export default `<div data-key="1969" style="position: relative;">
     ><span data-slate-leaf="true" data-offset-key="1970:6"
       ><span data-slate-content="true">!</span></span
     ></span
-  >
-  <table>
-    <tbody><tr
-      ><td data-slate-leaf="true">hello world</td
-      ><td data-slate-leaf="true">goodbye world</td
-      ><td data-slate-leaf="true">good evening world</td></tr></tbody>
-  </table>
-</div>
-<div data-key="1971" style="position: relative;">
+  ></div
+><div data-key="2000"
+  ><table
+    ><tbody data-key="2001"><tr
+      ><td data-key="2002"
+        ><span data-key="2003"
+          ><span data-slate-leaf="true" data-offset-key="2003:0"
+            >hello world</span
+          ></span
+        ></td
+      ><td data-key="2002" data-slate-leaf="true">goodbye world</td
+      ><td data-key="2002" data-slate-leaf="true">good evening world</td></tr></tbody
+    ></table
+  ></div
+><div data-key="1971" style="position: relative;">
   <span data-key="1972"
     ><span data-slate-leaf="true" data-offset-key="1972:0"
       ><span data-slate-content="true"

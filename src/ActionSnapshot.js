@@ -27,7 +27,7 @@ function compare(document, snapshot) {
     return { type: "enter", subtype: "br" }
   } else if (el.childNodes.length < snapshot.childNodesLength) {
     // Backspace based on there being less child nodes
-    return { type: "backspace", subtype: "element" }
+    return { type: "backspace", subtype: "child" }
   }
 
   // Enter based on there being a duplicate `offsetKey`
@@ -47,13 +47,18 @@ function compare(document, snapshot) {
     return { type: "backspace", subtype: "character" }
   }
 
-  // If the element cannot be found in the body, this indicates that the
-  // current element needs to have a specially handled Backspace.
-  // Either (a) merged a block or (b) completely removed a span with a
-  // single character.
-  if (closest(el, "body") == null) {
-    return { type: "backspace", subtype: "special" }
+  // In Chrome this works but not sure in Android.
+  if (el.parentElement == null) {
+    return { type: "backspace", subtype: "sibling" }
   }
+
+  // If the element cannot be found in the body, this indicates that the
+  // current element was merged and taken out of the DOM
+  if (closest(el, "body") == null) {
+    return { type: "backspace", subtype: "merge-block" }
+  }
+
+  return { type: "unknown", subtype: "na" }
 }
 
 export default class ActionSnapshot {
